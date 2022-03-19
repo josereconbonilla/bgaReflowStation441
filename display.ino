@@ -18,8 +18,10 @@ void displayEraseInf()
   lcd.setCursor(0, 0);
   lcd.print(F("ERASE"));
   lcd.setCursor(0, 1);
-  for (int i = 0; i < 15; i++) {
-    lcd.print(F(".")); delay(100);
+  for (int i = 0; i < 15; i++)
+  {
+    lcd.print(F("."));
+    delay(100);
   }
 }
 
@@ -57,10 +59,14 @@ void welcomeScreen()
 void lcdTemp(double inp, byte inpt, byte loc)
 {
   lcd.setCursor(12, loc);
-  if ((inp >= 250)) {
+  if ((inp >= 250))
+  {
     lcd.print(F("Fail"));
-  } else {
-    if (inp <= 99) {
+  }
+  else
+  {
+    if (inp <= 99)
+    {
       lcd.print(inp);
     }
     else if (inp >= 100)
@@ -71,8 +77,10 @@ void lcdTemp(double inp, byte inpt, byte loc)
   }
 }
 
-void showIdleScreen() {
-  if (updateScreen) {
+void showIdleScreen()
+{
+  if (updateScreen)
+  {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("RDY!"));
@@ -122,13 +130,16 @@ void showIdleScreen() {
   lcd.print(F(" "));
 }
 
-void showSave() {
+void showSave()
+{
   lcd.setCursor(13, 1);
   lcd.print(F("<Sv"));
 }
 
-void showProfEditStepScr() {
-  if (updateScreen) {
+void showProfEditStepScr()
+{
+  if (updateScreen)
+  {
     clearLine2();
     lcd.setCursor(0, 1);
     lcd.print(F("Stp:"));
@@ -142,16 +153,21 @@ void showProfEditStepScr() {
 }
 
 void showValScr(int val) {
-  if (val < 100 && val >= 10) {
+  if (val < 100 && val >= 10)
+  {
     lcd.print(" ");
     lcd.print(val);
-  } else {
+  }
+  else
+  {
     lcd.print(val);
   }
 }
 
-void showEditPwrBtm() {
-  if (updateScreen) {
+void showEditPwrBtm()
+{
+  if (updateScreen)
+  {
     clearLine2();
     lcd.setCursor(0, 1);
     lcd.print(F("PB:"));
@@ -165,8 +181,10 @@ void showEditPwrBtm() {
   lcd.print(F("%"));
 }
 
-void showEditPwrTop() {
-  if (updateScreen) {
+void showEditPwrTop()
+{
+  if (updateScreen)
+  {
     clearLine2();
     lcd.setCursor(0, 1);
     lcd.print(F("PU:"));
@@ -180,8 +198,10 @@ void showEditPwrTop() {
   lcd.print(F("%"));
 }
 
-void showProfEditDwlScr() {
-  if (updateScreen) {
+void showProfEditDwlScr()
+{
+  if (updateScreen)
+  {
     clearLine2();
     lcd.setCursor(0, 1);
     lcd.print(F("s-"));
@@ -197,8 +217,10 @@ void showProfEditDwlScr() {
   lcd.print(F("s"));
 }
 
-void showTempStpEditScr() {
-  if (updateScreen) {
+void showTempStpEditScr()
+{
+  if (updateScreen)
+  {
     clearLine2();
     lcd.setCursor(0, 1);
     lcd.print(F("s-"));
@@ -214,8 +236,10 @@ void showTempStpEditScr() {
   lcd.write(byte(0));
 }
 
-void showProfSP2Edit() {
-  if (updateScreen) {
+void showProfSP2Edit()
+{
+  if (updateScreen)
+  {
     clearLine2();
     lcd.setCursor(0, 1);
     lcd.print(F("btmH:"));
@@ -229,9 +253,11 @@ void showProfSP2Edit() {
   lcd.write(byte(0));
 }
 
-void showEditStepScreen() {
+void showEditStepScreen()
+{
   float out_float;
-  if (updateScreen) {
+  if (updateScreen)
+  {
     lcd.clear();
     lcd.setCursor(0, 1);
     lcd.print(F("s-"));
@@ -243,6 +269,7 @@ void showEditStepScreen() {
     showSave();
     updateScreen = false;
   }
+
   if (editStep == 0) {
     lcd.setCursor(0, 0);
     lcd.print(tc1);
@@ -253,7 +280,8 @@ void showEditStepScreen() {
     showSave();
     updateScreen = false;
   }
-  else {
+  else
+  {
     lcd.setCursor(0, 0);
     lcd.print(profile.temperatureStep[editStep - 1]);
     lcd.write(byte(0));
@@ -275,13 +303,15 @@ void showEditStepScreen() {
                 / (profile.rampRateStep[editStep] / 10.0);
     out_floatScr(out_float);
   }
+
   lcd.setCursor(9, 1);
   out_float = profile.rampRateStep[editStep] / 10.0;
   lcd.print(out_float, 1);
   lcd.write(byte(0));
 }
 
-void out_floatScr(float val) {
+void out_floatScr(float val)
+{
   lcd.setCursor(6, 0);
   lcd.print(val, 0);
   lcd.print("s ");
@@ -296,13 +326,16 @@ void showRampTemp(byte comp,
   {
     lcd.print(" ");
     lcd.print(val);
-  } else {
+  }
+  else
+  {
     lcd.print(val);
   }
   lcd.write(byte(0));
 }
 
-void showSelLbl() {
+void showSelLbl()
+{
   lcd.setCursor(12, 1);
   lcd.print(F("<sel"));
 }
@@ -311,7 +344,8 @@ void showPIDMenu()
 {
   showSelLbl();
   lcd.setCursor(1, 1);
-  switch (pidCursor) {
+  switch (pidCursor)
+  {
     case 0: lcd.print(F("Bottom")); break;
     case 1: lcd.print(F("Top")); break;
     case 2: lcd.print(F("A-Tune")); break;
@@ -321,7 +355,8 @@ void showPIDMenu()
 
 void showPIDMenuHeader()
 {
-  if (updateScreen) {
+  if (updateScreen)
+  {
     lcd.clear();
     lcd.setCursor(2, 0);
     lcd.print(F("-=PID MENU=-"));
@@ -331,7 +366,8 @@ void showPIDMenuHeader()
 
 void pidEditHeader()
 {
-  if (updateScreen) {
+  if (updateScreen)
+  {
     lcd.clear();
     lcd.setCursor(2, 0);
     lcd.print(F("-=PID EDIT=-"));
@@ -347,7 +383,8 @@ void clearLine2()
 
 void profileEditSelScr()
 {
-  if (updateScreen) {
+  if (updateScreen)
+  {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("-=Pr"));
@@ -361,7 +398,8 @@ void profileEditSel()
 {
   showSelLbl();
   lcd.setCursor(1, 1);
-  switch (selection2) {
+  switch (selection2)
+  {
     case 0: lcd.print(F("P-Steps")); break;
     case 1: lcd.print(F("TempBtm")); break;
     case 2: lcd.print(F("TempTop")); break;
@@ -377,7 +415,8 @@ void showPIDCurD()
 {
   showSelLbl();
   lcd.setCursor(0, 1);
-  switch (pidCursorD) {
+  switch (pidCursorD)
+  {
     case 0: lcd.print(F("BtmP:")); lcd.print(KpD); break;
     case 1: lcd.print(F("BtmI:")); lcd.print(KiD); break;
     case 2: lcd.print(F("BtmD:")); lcd.print(KdD); break;
@@ -390,7 +429,8 @@ void showPIDCurU()
 {
   showSelLbl();
   lcd.setCursor(0, 1);
-  switch (pidCursorU) {
+  switch (pidCursorU)
+  {
     case 0: lcd.print(F("TopP:")); lcd.print(KpU); break;
     case 1: lcd.print(F("TopI:")); lcd.print(KiU); break;
     case 2: lcd.print(F("TopD:")); lcd.print(KdU); break;
@@ -401,7 +441,8 @@ void showPIDCurU()
 
 void showPIDTuneHeader()
 {
-  if (updateScreen) {
+  if (updateScreen)
+  {
     lcd.clear();
     lcd.setCursor(2, 0);
     lcd.print(F("-=PID Tune=-"));
@@ -413,7 +454,8 @@ void showPIDTuneSel()
 {
   showSelLbl();
   lcd.setCursor(1, 1);
-  switch (selection) {
+  switch (selection)
+  {
     case 0: lcd.print(F("Bottom")); break;
     case 1: lcd.print(F("Top")); break;
     case 2: lcd.print(F("GoBack")); break;
@@ -423,7 +465,8 @@ void showPIDTuneSel()
 void showPIDEdit()
 {
   lcd.setCursor(0, 1);
-  switch (pidEdit) {
+  switch (pidEdit)
+  {
     case 0: lcd.print(F("dP:")); lcd.print(KpD); break;
     case 1: lcd.print(F("dI:")); lcd.print(KiD); break;
     case 2: lcd.print(F("dD:")); lcd.print(KdD); break;
@@ -439,10 +482,12 @@ void showPIDEdit()
 void showPulseOut(byte val, byte loc)
 {
   lcd.setCursor(11, loc);
-  if (val >= 20) {
+  if (val >= 20)
+  {
     lcd.print(F("<"));
   }
-  else if (val < 20) {
+  else if (val < 20)
+  {
     lcd.print(F(" "));
   }
 }
@@ -470,7 +515,8 @@ void showDwellCount(int8_t count)
 
 void showReflowComplete()
 {
-  if (updateScreen) {
+  if (updateScreen)
+  {
     lcd.setCursor(0, 0);
     lcd.print(F("Done"));
     showPulseOut(0, 0);
@@ -486,7 +532,8 @@ void rstScreen()
   lcd.print(F("-=REBOOT=-"));
   lcd.setCursor(5, 1);
   lcd.print(F("in:"));
-  for (uint8_t i = 20; i > 0; i--) {
+  for (uint8_t i = 20; i > 0; i--)
+  {
     lcd.setCursor(9, 1);
     if (i >= 10)
     {
@@ -505,9 +552,12 @@ void rstScreen()
 void showTopIcon(bool stat)
 {
   lcd.setCursor(5, 0);
-  if (stat) {
+  if (stat)
+  {
     lcd.write(byte(1));
-  } else {
+  }
+  else
+  {
     lcd.print(F(" "));
   }
 }
@@ -515,18 +565,22 @@ void showTopIcon(bool stat)
 void showBottomIcon(bool stat)
 {
   lcd.setCursor(4, 1);
-  if (stat) {
+  if (stat)
+  {
     lcd.write(byte(2));
     lcd.write(byte(3));
     lcd.write(byte(4));
-  } else {
+  }
+  else
+  {
     lcd.print(F("   "));
   }
 }
 
 void showTuningHeader()
 {
-  if (updateScreen) {
+  if (updateScreen) 
+  {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Tune"));
@@ -556,6 +610,10 @@ void tuneScreenShow(byte outpt,
   {
     lcd.print(F("  0"));
   }
+  else
+  {
+    lcd.print (out);
+  }
   lcd.print(F("%"));
 
   lcd.setCursor(7, 1);
@@ -572,8 +630,12 @@ void tuneScreenShow(byte outpt,
   else if (accu == 0) {
     lcd.print(F("  0"));
   }
+  else
+  {
+    lcd.print(accu);
+  }
   lcd.print(F("%"));
-
+  
   showPulseOut(out, loc);
 }
 

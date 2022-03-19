@@ -17,13 +17,24 @@
 #include "src/max6675.h"
 #include "src/system.h"
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+LiquidCrystal_I2C lcd(0x27,
+                      16,
+                      2);
+
 modedEncoder *encoder;
 SWITCH toggleSwitch(A0);
 modedPID_Tuner tuner1;
 modedPID_Tuner tuner2;
-modedPID regulator1(TUNE_P_PID, TUNE_I_PID, TUNE_D_PID, SENSOR_SAMPLING_TIME);
-modedPID regulator2(TUNE_P_PID, TUNE_I_PID, TUNE_D_PID, SENSOR_SAMPLING_TIME);
+
+modedPID regulator1(TUNE_P_PID,
+                    TUNE_I_PID,
+                    TUNE_D_PID,
+                    SENSOR_SAMPLING_TIME);
+
+modedPID regulator2(TUNE_P_PID,
+                    TUNE_I_PID,
+                    TUNE_D_PID,
+                    SENSOR_SAMPLING_TIME);
 
 
 void setup() {
@@ -31,9 +42,16 @@ void setup() {
 
   initPins();
   initTimers();
-  encoder = new modedEncoder(6, 5, 2);
-  attachInterrupt(1, Dimming, RISING);
-  toggleSwitch.init(500, 3000);
+  encoder = new modedEncoder(6,
+                             5,
+                             2);
+
+  attachInterrupt(1,
+                  Dimming,
+                  RISING);
+
+  toggleSwitch.init(500,
+                    3000);
 
   initDisplay();
   welcomeScreen();
@@ -67,20 +85,25 @@ labelbegin:
   increment = (value - last);
   decrement = (last - value);
 
-  if (screen == 14 || alarmOn) {
-    if (alarmCount < 15 && toggleSwitchState) {
+  if (screen == 14 || alarmOn)
+  {
+    if (alarmCount < 15
+        && toggleSwitchState)
+    {
       alarmOn = true;
       beep_(80, 1046); delay(40);
       beep_(140, 1046); delay(100);
       alarmCount++;
     }
-    else {
+    else
+    {
       alarmCount = 0;
       alarmOn = false;
     }
   }
 
-  if (millis() > nextRead1) {
+  if (millis() > nextRead1)
+  {
     nextRead1 = millis() + SENSOR_SAMPLING_TIME;
     Input1 = getTempHuman(1);
     Input2 = getTempHuman(2);
@@ -97,14 +120,16 @@ labelbegin:
       lcdTemp(Input1, tc1, 0);
       lcdTemp(Input2, tc2, 1);
 
-      if (toggleSwitchState) {
+      if (toggleSwitchState)
+      {
         beep_(200, 1046);
         beep_(80, 1094);
         toggleIdleFunc();
         startSerialCom();
       }
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         if (nex && ( millis() - ms_button) > 250)
@@ -113,13 +138,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           currentProfile++;
-          if (currentProfile >= 9) {
+          if (currentProfile >= 9)
+          {
             currentProfile = 9;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         if (prev && ( millis() - ms_button) > 250)
@@ -128,14 +155,17 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           currentProfile--;
-          if (currentProfile <= 1) {
+          if (currentProfile <= 1)
+          {
             currentProfile = 1;
           }
         }
       }
       loadProfile();
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
             screen = 17;
@@ -163,7 +193,8 @@ labelbegin:
     case 1: //edit profile steps screen
       showProfEditStepScr();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         if (nex && ( millis() - ms_button) > 250)
@@ -172,13 +203,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           profile.profileSteps++;
-          if (profile.profileSteps >= 9) {
+          if (profile.profileSteps >= 9)
+          {
             profile.profileSteps = 9;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         if (prev && ( millis() - ms_button) > 250)
@@ -187,14 +220,17 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           profile.profileSteps--;
-          if (profile.profileSteps <= 1) {
+          if (profile.profileSteps <= 1)
+          {
             profile.profileSteps = 1;
           }
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
             saveProfileSteps();
@@ -207,26 +243,32 @@ labelbegin:
 
     case 2: //edit preheater setpoint = preheater ramp rate speed missing
       showProfSP2Edit();
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         beep_(40, 1046);
         profile.Setpoint2 += increment;
-        if (profile.Setpoint2 >= 230) {
+        if (profile.Setpoint2 >= 230)
+        {
           profile.Setpoint2 = 230;
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         beep_(40, 1046);
         profile.Setpoint2 -= decrement;
-        if (profile.Setpoint2 <= 80) {
+        if (profile.Setpoint2 <= 80)
+        {
           profile.Setpoint2 = 80;
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(80, 1046);
             saveProfileStpoint2();
@@ -240,36 +282,45 @@ labelbegin:
 
     case 3: //edit setpoint for topheater >>stepping
 
-      showTempStpEditScr(); 
+      showTempStpEditScr();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         beep_(40, 1046);
         profile.temperatureStep[editStep] += increment;
-        if (profile.temperatureStep[editStep] >= 238) {
+        if (profile.temperatureStep[editStep] >= 238)
+        {
           profile.temperatureStep[editStep] = 238;
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         beep_(40, 1046);
         profile.temperatureStep[editStep] -= decrement;
-        if (profile.temperatureStep[editStep] <= 80) {
+        if (profile.temperatureStep[editStep] <= 80)
+        {
           profile.temperatureStep[editStep] = 80;
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
-            if (editStep + 1 == profile.profileSteps) {
+            if (editStep + 1 == profile.profileSteps)
+            {
               saveProfileTempStep();
               editStep = 0;
               screen = 17;
               updateScreen = true;
-            } else {
+            }
+            else
+            {
               saveProfileTempStep();
               editStep++;
               updateScreen = true;
@@ -291,7 +342,8 @@ labelbegin:
     case 4: //edit ramprate for topheater >> stepping
       showEditStepScreen();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         if (nex && ( millis() - ms_button) > 250)
@@ -300,13 +352,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           profile.rampRateStep[editStep]++;
-          if (profile.rampRateStep[editStep] >= 30) {
+          if (profile.rampRateStep[editStep] >= 30)
+          {
             profile.rampRateStep[editStep] = 30;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         if (prev && ( millis() - ms_button) > 250)
@@ -315,22 +369,28 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           profile.rampRateStep[editStep]--;
-          if (profile.rampRateStep[editStep] <= 1) {
+          if (profile.rampRateStep[editStep] <= 1)
+          {
             profile.rampRateStep[editStep] = 1;
           }
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
-            if (editStep + 1 == profile.profileSteps) {
+            if (editStep + 1 == profile.profileSteps)
+            {
               saveProfileRampStep();
               updateScreen = true;
               editStep = 0;
               screen = 17;
-            } else {
+            }
+            else
+            {
               saveProfileRampStep();
               editStep++;
               updateScreen = true;
@@ -353,34 +413,43 @@ labelbegin:
 
       showProfEditDwlScr();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         beep_(40, 1046);
         profile.dwellTimerStep[editStep] += increment;
-        if (profile.dwellTimerStep[editStep] >= 240) {
+        if (profile.dwellTimerStep[editStep] >= 240)
+        {
           profile.dwellTimerStep[editStep] = 240;
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         beep_(40, 1046);
         profile.dwellTimerStep[editStep] -= decrement;
-        if (profile.dwellTimerStep[editStep] <= 1) {
+        if (profile.dwellTimerStep[editStep] <= 1)
+        {
           profile.dwellTimerStep[editStep] = 1;
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
-            if (editStep + 1 == profile.profileSteps) {
+            if (editStep + 1 == profile.profileSteps)
+            {
               saveProfileDwell();
               editStep = 0;
               screen = 17;
               updateScreen = true;
-            } else {
+            }
+            else
+            {
               saveProfileDwell();
               editStep++;
               updateScreen = true;
@@ -403,7 +472,8 @@ labelbegin:
 
       showEditPwrBtm();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         if (nex && ( millis() - ms_button) > 250)
@@ -412,13 +482,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           profile.pwr_BOTTOM++;
-          if (profile.pwr_BOTTOM >= 100) {
+          if (profile.pwr_BOTTOM >= 100)
+          {
             profile.pwr_BOTTOM = 100;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         if (prev && ( millis() - ms_button) > 250)
@@ -427,14 +499,17 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           profile.pwr_BOTTOM--;
-          if (profile.pwr_BOTTOM <= 1) {
+          if (profile.pwr_BOTTOM <= 1)
+          {
             profile.pwr_BOTTOM = 1;
           }
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
             saveProfilePowerBtm();
@@ -449,7 +524,8 @@ labelbegin:
 
       showEditPwrTop();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         if (nex && ( millis() - ms_button) > 250)
@@ -458,13 +534,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           profile.pwr_TOP++;
-          if (profile.pwr_TOP >= 100) {
+          if (profile.pwr_TOP >= 100)
+          {
             profile.pwr_TOP = 100;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         if (prev && ( millis() - ms_button) > 250)
@@ -473,14 +551,17 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           profile.pwr_TOP--;
-          if (profile.pwr_TOP <= 1) {
+          if (profile.pwr_TOP <= 1)
+          {
             profile.pwr_TOP = 1;
           }
         }
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
             saveProfilePowerTop();
@@ -495,7 +576,8 @@ labelbegin:
     case 8: //pid selection for topheater, preheater, and autotune menu
       showPIDMenuHeader();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         clearLine2();
@@ -505,13 +587,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           pidCursor++;
-          if (pidCursor > 3) {
+          if (pidCursor > 3)
+          {
             pidCursor = 0;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         clearLine2();
@@ -521,19 +605,23 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           pidCursor--;
-          if (pidCursor < 0) {
+          if (pidCursor < 0)
+          {
             pidCursor = 3;
           }
         }
       }
       showPIDMenu();
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(40, 1046);
             updateScreen = true;
             pidCursorD = 0;
-            switch (pidCursor) {
+            switch (pidCursor)
+            {
               case 0: screen = 9; pidSelect = 0; break;
               case 1: screen = 9; pidSelect = 1; break;
               case 2: screen = 15; break;
@@ -547,80 +635,96 @@ labelbegin:
     case 9: //pid select edit screen for preheater and topheater
       showPIDMenuHeader();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         clearLine2();
-        if (pidSelect == 0) {
+        if (pidSelect == 0)
+        {
           if (nex && ( millis() - ms_button) > 250)
           {
             ms_button =  millis();
             beep_(40, 1046);
             nex = false;
             pidCursorD++;
-            if (pidCursorD > 3) {
+            if (pidCursorD > 3)
+            {
               pidCursorD = 0;
             }
           }
         }
-        else if (pidSelect == 1) {
+        else if (pidSelect == 1)
+        {
           if (nex && ( millis() - ms_button) > 250)
           {
             ms_button =  millis();
             beep_(40, 1046);
             nex = false;
             pidCursorU++;
-            if (pidCursorU > 3) {
+            if (pidCursorU > 3)
+            {
               pidCursorU = 0;
             }
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         clearLine2();
-        if (pidSelect == 0) {
+        if (pidSelect == 0)
+        {
           if (prev && ( millis() - ms_button) > 250)
           {
             ms_button =  millis();
             beep_(40, 1046);
             prev = false;
             pidCursorD--;
-            if (pidCursorD < 0) {
+            if (pidCursorD < 0)
+            {
               pidCursorD = 3;
             }
           }
         }
-        else if (pidSelect == 1) {
+        else if (pidSelect == 1)
+        {
           if (prev && ( millis() - ms_button) > 250)
           {
             ms_button =  millis();
             beep_(40, 1046);
             prev = false;
             pidCursorU--;
-            if (pidCursorU < 0) {
+            if (pidCursorU < 0)
+            {
               pidCursorU = 3;
             }
           }
         }
       }
 
-      if (pidSelect == 0) {
+      if (pidSelect == 0)
+      {
         showPIDCurD();
       }
-      else if (pidSelect == 1) {
+      else if (pidSelect == 1)
+      {
         showPIDCurU();
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(80, 1046);
             updateScreen = true;
-            if (pidSelect == 0) {
-              switch (pidCursorD) {
+            if (pidSelect == 0)
+            {
+              switch (pidCursorD)
+              {
                 case 0: screen = 10; pidEdit = 0; break;
                 case 1: screen = 10; pidEdit = 1; break;
                 case 2: screen = 10; pidEdit = 2; break;
@@ -643,94 +747,112 @@ labelbegin:
 
     case 10: // pid edit values for topheater and preheater
       pidEditHeader();
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         beep_(40, 1046);
-        switch (pidEdit) {
+        switch (pidEdit)
+        {
           case 0:
             KpD += increment * 0.01;
-            if (KpD >= 255.01) {
+            if (KpD >= 255.01)
+            {
               KpD = 255;
             }
             break;
           case 1:
             KiD += increment * 0.01;
-            if (KiD >= 255.01) {
+            if (KiD >= 255.01)
+            {
               KiD = 255;
             }
             break;
           case 2:
             KdD += increment * 0.01;
-            if (KdD >= 255.01) {
+            if (KdD >= 255.01)
+            {
               KdD = 255;
             }
             break;
           case 3:
             KpU += increment * 0.01;
-            if (KpU >= 255.01) {
+            if (KpU >= 255.01)
+            {
               KpU = 255;
             }
             break;
           case 4:
             KiU += increment * 0.01;
-            if (KiU >= 255.01) {
+            if (KiU >= 255.01)
+            {
               KiU = 255;
             }
             break;
           case 5:
             KdU += increment * 0.01;
-            if (KdU >= 255.01) {
+            if (KdU >= 255.01)
+            {
               KdU = 255;
             }
             break;
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         beep_(40, 1046);
-        switch (pidEdit) {
+        switch (pidEdit)
+        {
           case 0:
             KpD -= decrement * 0.01;
-            if (KpD <= 0.00) {
+            if (KpD <= 0.00)
+            {
               KpD = 0.00;
             }
             break;
           case 1:
             KiD -= decrement * 0.01;
-            if (KiD <= 0.00) {
+            if (KiD <= 0.00)
+            {
               KiD = 0.00;
             }
             break;
           case 2:
             KdD -= decrement * 0.01;
-            if (KdD <= 0.00) {
+            if (KdD <= 0.00)
+            {
               KdD = 0.00;
             }
             break;
           case 3:
             KpU -= decrement * 0.01;
-            if (KpU <= 0.00) {
+            if (KpU <= 0.00)
+            {
               KpU = 0.00;
             }
             break;
           case 4:
             KiU -= decrement * 0.01;
-            if (KiU <= 0.00) {
+            if (KiU <= 0.00)
+            {
               KiU = 0.00;
             }
             break;
           case 5:
             KdU -= decrement * 0.01;
-            if (KdU <= 0.00) {
+            if (KdU <= 0.00)
+            {
               KdU = 0.00;
             }
             break;
         }
       }
       showPIDEdit();
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
             beep_(80, 1046);
             switch (pidEdit) {
@@ -907,13 +1029,16 @@ labelbegin:
 
     case 15: //pid autotune and restore default menu
 
-      if (Status == 3) {
+      if (Status == 3)
+      {
         showResetHeader();
       }
 
-      if (Status != 3) {
+      if (Status != 3)
+      {
         showPIDTuneHeader();
-        if (value > last) { //encoder plus
+        if (value > last)
+        { //encoder plus
           last = value;
           nex = true;
           clearLine2();
@@ -923,13 +1048,15 @@ labelbegin:
             beep_(40, 1046);
             nex = false;
             selection++;
-            if (selection > 2) {
+            if (selection > 2)
+            {
               selection = 0;
             }
           }
         }
 
-        else if (value < last) { //encoder minus
+        else if (value < last)
+        { //encoder minus
           last = value;
           prev = true;
           clearLine2();
@@ -939,7 +1066,8 @@ labelbegin:
             beep_(80, 1046);
             prev = false;
             selection--;
-            if (selection < 0) {
+            if (selection < 0)
+            {
               selection = 2;
             }
           }
@@ -947,10 +1075,13 @@ labelbegin:
         showPIDTuneSel();
       }
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Clicked:
-            if (Status != 3) {
+            if (Status != 3)
+            {
               beep_(40, 1046);
               updateScreen = true;
               if (selection == 0)
@@ -968,7 +1099,8 @@ labelbegin:
             }
             break;
           case modedEncoder::DoubleClicked:
-            if (Status == 3) {
+            if (Status == 3)
+            {
               beep_(40, 1046);
               format = true;
               updateScreen = true;
@@ -976,7 +1108,8 @@ labelbegin:
             break;
           case modedEncoder::Held: beep_(200, 1046); break;
           case modedEncoder::Released:
-            if (Status == 3) {
+            if (Status == 3)
+            {
               Status = 0;
               beep_(40, 1046);
               updateScreen = true;
@@ -987,11 +1120,13 @@ labelbegin:
       }
       break;
 
-    case 16: //autotune running 
+    case 16: //autotune running
       showTuningHeader();
 
-      if (b != modedEncoder::Open) { //encoder button
-        switch (b) {
+      if (b != modedEncoder::Open)
+      { //encoder button
+        switch (b)
+        {
           case modedEncoder::Held: beep_(200, 1046); break;
           case modedEncoder::Released:
             beep_(40, 1046);
@@ -1008,7 +1143,8 @@ labelbegin:
 
       profileEditSelScr();
 
-      if (value > last) { //encoder plus
+      if (value > last)
+      { //encoder plus
         last = value;
         nex = true;
         clearLine2();
@@ -1018,13 +1154,15 @@ labelbegin:
           beep_(40, 1046);
           nex = false;
           selection2++;
-          if (selection2 > 7) {
+          if (selection2 > 7)
+          {
             selection2 = 0;
           }
         }
       }
 
-      else if (value < last) { //encoder minus
+      else if (value < last)
+      { //encoder minus
         last = value;
         prev = true;
         clearLine2();
@@ -1034,7 +1172,8 @@ labelbegin:
           beep_(40, 1046);
           prev = false;
           selection2--;
-          if (selection2 < 0) {
+          if (selection2 < 0)
+          {
             selection2 = 7;
           }
         }
@@ -1042,12 +1181,14 @@ labelbegin:
 
       profileEditSel();
 
-      if (b != modedEncoder::Open) { //encoder button
+      if (b != modedEncoder::Open)
+      { //encoder button
         switch (b) {
           case modedEncoder::Clicked:
             beep_(40, 1046);
             updateScreen = true;
-            switch (selection2) {
+            switch (selection2)
+            {
               case 0: screen = 1; break;
               case 1: screen = 2; break;
               case 2: screen = 3; editStep = 0; break;
@@ -1065,22 +1206,22 @@ labelbegin:
 
   if (Status == 0) //no process running
   {
-    if (Input1 > 50) 
+    if (Input1 > 50)
     {
-      if (((PIND & B00010000) >> 4) == LOW) 
+      if (((PIND & B00010000) >> 4) == LOW)
       {
         PORTD |= B00010000; //cooling fan for topheater >> on
       }
     }
-    else if (Input1 < 50) 
+    else if (Input1 < 50)
     {
-      if (((PIND & B00010000) >> 4) == HIGH) 
+      if (((PIND & B00010000) >> 4) == HIGH)
       {
         PORTD &= B11101111; //cooling fan for topheater >> off
       }
     }
 
-    if (((PINC & B00000010) >> 1) == HIGH) 
+    if (((PINC & B00000010) >> 1) == HIGH)
     {
       PORTC &= B11111101; //safety relay must be off in case of triac failure
     }
@@ -1088,17 +1229,23 @@ labelbegin:
   else if (Status == 1)  //running loaded profile
   {
 
-    if (millis() > nextRead2) {
+    if (millis() > nextRead2)
+    {
       nextRead2 = millis() + GRAPHICS_SAMPLING_TIME;
-      if (curCount == 0) {
-        if (TopStart == true) {
+      if (curCount == 0)
+      {
+        if (TopStart == true)
+        {
           showTopIcon(true);
         }
-        if (flagB == true) {
+        if (flagB == true)
+        {
           showBottomIcon(true);
         }
         curCount = 1;
-      } else {
+      }
+      else
+      {
         showTopIcon(false);
         showBottomIcon(false);
         curCount = 0;
@@ -1107,11 +1254,14 @@ labelbegin:
 
     int x = Setpoint1 - Input1;
     int gap1 = abs(x);
-    if (gap1 < 10) {
+    if (gap1 < 10)
+    {
       regulator1.Kp = KpU;
       regulator1.Ki += KiU;
       regulator1.Kd = KdU;
-    } else {
+    }
+    else
+    {
       regulator1.Kp = TUNE_P_PID;
       regulator1.Ki += TUNE_I_PID;
       regulator1.Kd = TUNE_D_PID;
@@ -1119,11 +1269,14 @@ labelbegin:
 
     int y = Setpoint22 - Input2;
     int gap2 = abs(y);
-    if (gap2 < 2) {
+    if (gap2 < 2)
+    {
       regulator2.Kp = KpD;
       regulator2.Ki += KiD;
       regulator2.Kd = KdD;
-    } else {
+    }
+    else
+    {
       regulator2.Kp = TUNE_P_PID;
       regulator2.Ki += TUNE_I_PID;
       regulator2.Kd = TUNE_D_PID;
@@ -1132,7 +1285,8 @@ labelbegin:
     lcdTemp(Input1, tc1, 0);
     lcdTemp(Input2, tc2, 1);
 
-    if (millis() > nextRead3) {
+    if (millis() > nextRead3)
+    {
       nextRead3 = millis() + SENSOR_SAMPLING_TIME;
 
       regulator1.setpoint = Setpoint1;
@@ -1141,14 +1295,16 @@ labelbegin:
       regulator2.setpoint = Setpoint22;
       regulator2.input = Input2;
 
-      if (flagB) {
+      if (flagB)
+      {
         P_D = regulator2.getResult();
         P_D_Serial = map(P_D, 0, 150 , 0 , 100);
         BottomHeaterON(P_D);
         showPulseOut(P_D_Serial, 1);
       }
 
-      if (TopStart) {
+      if (TopStart)
+      {
         P_U = regulator1.getResult();
         P_U_Serial = map(P_U, 0, 150 , 0 , 100);
         TopHeaterON(P_U);
@@ -1157,12 +1313,14 @@ labelbegin:
       Serial.println(buf);
     }
 
-    if (!flagB) {
+    if (!flagB)
+    {
       P_D = 0;
       BottomHeaterOFF();
     }
 
-    if (!TopStart) {
+    if (!TopStart)
+    {
       P_U = 0;
       TopHeaterOFF();
     }
@@ -1173,9 +1331,11 @@ labelbegin:
 
     lcdTemp(Input1, tc1, 0);
     lcdTemp(Input2, tc2, 1);
-    if (millis() > nextRead3) {
+    if (millis() > nextRead3)
+    {
       nextRead3 = millis() + SENSOR_SAMPLING_TIME;
-      if (!tuning2) {
+      if (!tuning2)
+      {
         regulator2.Kp = TUNE_P_PID;
         regulator2.Ki += TUNE_I_PID;
         regulator2.Kd = TUNE_D_PID;
@@ -1183,36 +1343,44 @@ labelbegin:
         regulator2.input = Input2;
         P_D = regulator2.getResult();
         tunerAccu2 = 0;
-      } else if (tuning2) {
+      }
+      else if (tuning2)
+      {
         tuner2.setInput(Input2);
         tuner2.compute();
         P_D = tuner2.getOutput();
         tunerAccu2 = tuner2.getAccuracy();
       }
-      tuneScreenShow(P_D, tunerAccu2, 1);
       BottomHeaterON(P_D);
       Serial.println(buf);
     }
 
-    if (millis() > nextRead2) {
+    if (millis() > nextRead2)
+    {
       nextRead2 = millis() + GRAPHICS_SAMPLING_TIME;
-      if (curCount == 0) {
+      if (curCount == 0)
+      {
         showBottomIcon(true);
         curCount = 1;
       }
-      else {
+      else
+      {
         showBottomIcon(false);
         curCount = 0;
       }
     }
 
     double tuneGap2 = abs(tuneSP - Input2);
-    if (tuneGap2 < 0.5) {
+    if (tuneGap2 < 0.5)
+    {
       tuning2 = true;
       tuningTrueDisp();
     }
-    if (tuning2) {
-      if (tunerAccu2 > 97) {
+
+    if (tuning2)
+    {
+      if (tunerAccu2 > 97)
+      {
         KpD = tuner2.getPID_p();
         KiD = tuner2.getPID_i();
         KdD = tuner2.getPID_d();
@@ -1229,26 +1397,33 @@ labelbegin:
         updateScreen = true;
       }
     }
+    tuneScreenShow(P_D, tunerAccu2, 1);
     TopHeaterOFF();
   }
 
   else if (Status == 3) //restore factory settings
   {
-    
-    if (millis() > nextRead2) {
+
+    if (millis() > nextRead2)
+    {
       nextRead2 = millis() + GRAPHICS_SAMPLING_TIME;
-      if (curCount == 0) {
+      if (curCount == 0)
+      {
         curCount = 1;
         dispFormatConfirm(true);
-      } else {
+      }
+      else
+      {
         dispFormatConfirm(false);
         curCount = 0;
       }
     }
 
-    if (format) {
+    if (format)
+    {
       EEPROM.write(eeprom_id_address, eeprom_reset);
-      while (1) {
+      while (1)
+      {
         initEeprom();
         if (initEepromComplete) {
           initEepromComplete = false;
@@ -1264,9 +1439,11 @@ labelbegin:
 
     lcdTemp(Input1, tc1, 0);
     lcdTemp(Input2, tc2, 1);
-    if (millis() > nextRead3) {
+    if (millis() > nextRead3)
+    {
       nextRead3 = millis() + SENSOR_SAMPLING_TIME;
-      if (tuning1 == false) {
+      if (tuning1 == false)
+      {
         regulator1.Kp = TUNE_P_PID;
         regulator1.Ki += TUNE_I_PID;
         regulator1.Kd = TUNE_D_PID;
@@ -1275,36 +1452,43 @@ labelbegin:
         P_U = regulator1.getResult();
         tunerAccu1 = 0;
       }
-      else {
+      else
+      {
         tuner1.setInput(Input1);
         tuner1.compute();
         P_U = tuner1.getOutput();
         tunerAccu1 = tuner1.getAccuracy();
       }
-      tuneScreenShow(P_U, tunerAccu1, 0);
       TopHeaterON(P_U);
       Serial.println(buf);
     }
-    if (millis() > nextRead2) {
+
+    if (millis() > nextRead2)
+    {
       nextRead2 = millis() + GRAPHICS_SAMPLING_TIME;
-      if (curCount == 0) {
+      if (curCount == 0)
+      {
         showTopIcon(true);
         curCount = 1;
       }
-      else {
+      else
+      {
         showTopIcon(false);
         curCount = 0;
       }
     }
 
     double tuneGap1 = abs(tuneSP - Input1);
-    if (tuneGap1 < 0.5) {
+    if (tuneGap1 < 0.5)
+    {
       tuning1 = true;
       tuningTrueDisp();
     }
 
-    if (tuning1) {
-      if (tunerAccu1 > 98) {
+    if (tuning1)
+    {
+      if (tunerAccu1 > 98)
+      {
         KpU = tuner1.getPID_p();
         KiU = tuner1.getPID_i();
         KdU = tuner1.getPID_d();
@@ -1321,6 +1505,7 @@ labelbegin:
         updateScreen = true;
       }
     }
+    tuneScreenShow(P_U, tunerAccu1, 0);
     BottomHeaterOFF();
   }
   goto labelbegin;

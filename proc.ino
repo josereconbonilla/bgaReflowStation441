@@ -1,4 +1,5 @@
-void toggleIdleFunc() {
+void toggleIdleFunc() 
+{
   curCount = 0;
   P_D = 0;
   P_U = 0;
@@ -31,7 +32,8 @@ void toggleIdleFunc() {
   return;
 }
 
-void toggleRunFunc() {
+void toggleRunFunc()
+{
   beep_(200, 1094);
   beep_(80, 1046);
   P_D = 0;
@@ -43,7 +45,8 @@ void toggleRunFunc() {
   Status = 0;
 }
 
-void beginTuner1() {
+void beginTuner1() 
+{
   analogWrite(4, 128);
   Status = 4;
   screen = 16;
@@ -66,7 +69,8 @@ void beginTuner1() {
   return;
 }
 
-void beginTuner2() {
+void beginTuner2() 
+{
   Status = 2;
   screen = 16;
   PORTC |= B00000010;
