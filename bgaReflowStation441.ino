@@ -1182,11 +1182,14 @@ labelbegin:
         regulator2.setpoint = tuneSP;
         regulator2.input = Input2;
         P_D = regulator2.getResult();
+        tunerAccu2 = 0;
       } else if (tuning2) {
         tuner2.setInput(Input2);
         tuner2.compute();
         P_D = tuner2.getOutput();
+        tunerAccu2 = tuner2.getAccuracy();
       }
+      tuneScreenShow(P_D, tunerAccu2, 1);
       BottomHeaterON(P_D);
       Serial.println(buf);
     }
@@ -1209,8 +1212,7 @@ labelbegin:
       tuningTrueDisp();
     }
     if (tuning2) {
-      tunerAccu2 = tuner2.getAccuracy();
-      if (tuner2.getAccuracy() > 97) {
+      if (tunerAccu2 > 97) {
         KpD = tuner2.getPID_p();
         KiD = tuner2.getPID_i();
         KdD = tuner2.getPID_d();
@@ -1227,7 +1229,6 @@ labelbegin:
         updateScreen = true;
       }
     }
-    tuneScreenShow(P_D, tunerAccu2, 1);
     TopHeaterOFF();
   }
 
@@ -1272,12 +1273,15 @@ labelbegin:
         regulator1.setpoint = tuneSP;
         regulator1.input = Input1;
         P_U = regulator1.getResult();
+        tunerAccu1 = 0;
       }
       else {
         tuner1.setInput(Input1);
         tuner1.compute();
         P_U = tuner1.getOutput();
+        tunerAccu1 = tuner1.getAccuracy();
       }
+      tuneScreenShow(P_U, tunerAccu1, 0);
       TopHeaterON(P_U);
       Serial.println(buf);
     }
@@ -1300,8 +1304,7 @@ labelbegin:
     }
 
     if (tuning1) {
-      tunerAccu1 = tuner1.getAccuracy();
-      if (tuner1.getAccuracy() > 98) {
+      if (tunerAccu1 > 98) {
         KpU = tuner1.getPID_p();
         KiU = tuner1.getPID_i();
         KdU = tuner1.getPID_d();
@@ -1318,7 +1321,6 @@ labelbegin:
         updateScreen = true;
       }
     }
-    tuneScreenShow(P_U, tunerAccu1, 0);
     BottomHeaterOFF();
   }
   goto labelbegin;

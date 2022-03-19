@@ -57,13 +57,13 @@ void welcomeScreen()
 void lcdTemp(double inp, byte inpt, byte loc)
 {
   lcd.setCursor(12, loc);
-  if ((inp > 250)) {
+  if ((inp >= 250)) {
     lcd.print(F("Fail"));
   } else {
-    if (inp < 100) {
+    if (inp <= 99) {
       lcd.print(inp);
     }
-    else if (inp > 100)
+    else if (inp >= 100)
     {
       lcd.print(inpt);
       lcd.write(byte(0));
@@ -142,7 +142,7 @@ void showProfEditStepScr() {
 }
 
 void showValScr(int val) {
-  if (val < 100 ) {
+  if (val < 100 && val >= 10) {
     lcd.print(" ");
     lcd.print(val);
   } else {
@@ -287,12 +287,12 @@ void out_floatScr(float val) {
   lcd.print("s ");
 }
 
-void showRampTemp(byte comp, 
-byte val, 
-byte pos) 
+void showRampTemp(byte comp,
+                  byte val,
+                  byte pos)
 {
   lcd.setCursor(7, pos);
-  if (comp < 100 ) 
+  if (comp < 100 && comp >= 10)
   {
     lcd.print(" ");
     lcd.print(val);
@@ -307,7 +307,7 @@ void showSelLbl() {
   lcd.print(F("<sel"));
 }
 
-void showPIDMenu() 
+void showPIDMenu()
 {
   showSelLbl();
   lcd.setCursor(1, 1);
@@ -319,7 +319,7 @@ void showPIDMenu()
   }
 }
 
-void showPIDMenuHeader() 
+void showPIDMenuHeader()
 {
   if (updateScreen) {
     lcd.clear();
@@ -329,7 +329,7 @@ void showPIDMenuHeader()
   }
 }
 
-void pidEditHeader() 
+void pidEditHeader()
 {
   if (updateScreen) {
     lcd.clear();
@@ -339,13 +339,13 @@ void pidEditHeader()
   }
 }
 
-void clearLine2() 
+void clearLine2()
 {
   lcd.setCursor(0, 1);
   lcd.print("                ");
 }
 
-void profileEditSelScr() 
+void profileEditSelScr()
 {
   if (updateScreen) {
     lcd.clear();
@@ -357,7 +357,7 @@ void profileEditSelScr()
   }
 }
 
-void profileEditSel() 
+void profileEditSel()
 {
   showSelLbl();
   lcd.setCursor(1, 1);
@@ -373,7 +373,7 @@ void profileEditSel()
   }
 }
 
-void showPIDCurD() 
+void showPIDCurD()
 {
   showSelLbl();
   lcd.setCursor(0, 1);
@@ -386,7 +386,7 @@ void showPIDCurD()
   lcd.print(F("  "));
 }
 
-void showPIDCurU() 
+void showPIDCurU()
 {
   showSelLbl();
   lcd.setCursor(0, 1);
@@ -399,7 +399,7 @@ void showPIDCurU()
   lcd.print(F("  "));
 }
 
-void showPIDTuneHeader() 
+void showPIDTuneHeader()
 {
   if (updateScreen) {
     lcd.clear();
@@ -409,7 +409,7 @@ void showPIDTuneHeader()
   }
 }
 
-void showPIDTuneSel() 
+void showPIDTuneSel()
 {
   showSelLbl();
   lcd.setCursor(1, 1);
@@ -420,7 +420,7 @@ void showPIDTuneSel()
   }
 }
 
-void showPIDEdit() 
+void showPIDEdit()
 {
   lcd.setCursor(0, 1);
   switch (pidEdit) {
@@ -436,10 +436,10 @@ void showPIDEdit()
   lcd.print(F("<sv"));
 }
 
-void showPulseOut(byte val, byte loc) 
+void showPulseOut(byte val, byte loc)
 {
   lcd.setCursor(11, loc);
-  if (val > 20) {
+  if (val >= 20) {
     lcd.print(F("<"));
   }
   else if (val < 20) {
@@ -447,20 +447,20 @@ void showPulseOut(byte val, byte loc)
   }
 }
 
-void rampScr() 
+void rampScr()
 {
   lcd.setCursor(0, 0);
   lcd.print(F("PreH"));
 }
 
-void showRampStatus() 
+void showRampStatus()
 {
   lcd.setCursor(0, 0);
   lcd.print(F("Stp"));
   lcd.print(currentStep);
 }
 
-void showDwellCount(int8_t count) 
+void showDwellCount(int8_t count)
 {
   lcd.setCursor(0, 0);
   lcd.print("c");
@@ -468,7 +468,7 @@ void showDwellCount(int8_t count)
   lcd.print("s ");
 }
 
-void showReflowComplete() 
+void showReflowComplete()
 {
   if (updateScreen) {
     lcd.setCursor(0, 0);
@@ -479,7 +479,7 @@ void showReflowComplete()
   }
 }
 
-void rstScreen() 
+void rstScreen()
 {
   lcd.clear();
   lcd.setCursor(3, 0);
@@ -488,11 +488,11 @@ void rstScreen()
   lcd.print(F("in:"));
   for (uint8_t i = 20; i > 0; i--) {
     lcd.setCursor(9, 1);
-    if (i > 10)
+    if (i >= 10)
     {
       lcd.print(i);
     }
-    else if (i > 10)
+    else if (i < 10)
     {
       lcd.print(F("0"));
       lcd.print(i);
@@ -502,7 +502,7 @@ void rstScreen()
   }
 }
 
-void showTopIcon(bool stat) 
+void showTopIcon(bool stat)
 {
   lcd.setCursor(5, 0);
   if (stat) {
@@ -512,7 +512,7 @@ void showTopIcon(bool stat)
   }
 }
 
-void showBottomIcon(bool stat) 
+void showBottomIcon(bool stat)
 {
   lcd.setCursor(4, 1);
   if (stat) {
@@ -524,7 +524,7 @@ void showBottomIcon(bool stat)
   }
 }
 
-void showTuningHeader() 
+void showTuningHeader()
 {
   if (updateScreen) {
     lcd.clear();
@@ -542,12 +542,12 @@ void tuneScreenShow(byte outpt,
 {
   byte out = map(outpt, 0, 150, 0, 100);
   lcd.setCursor(7, 0);
-  if (out < 100)
+  if (out < 100 && out >= 10)
   {
     lcd.print(F(" "));
     lcd.print (out);
   }
-  else if (out < 10)
+  else if (out < 10 && out >= 1)
   {
     lcd.print(F("  "));
     lcd.print (out);
@@ -559,12 +559,12 @@ void tuneScreenShow(byte outpt,
   lcd.print(F("%"));
 
   lcd.setCursor(7, 1);
-  if (accu < 100)
+  if (accu < 100 && accu >= 10)
   {
     lcd.print(F(" "));
     lcd.print(accu);
   }
-  else if (accu < 10)
+  else if (accu < 10 && accu >= 1)
   {
     lcd.print(F("  "));
     lcd.print(accu);
@@ -596,7 +596,7 @@ void tuningTrueDisp()
 void dispFormatConfirm(bool curcnt)
 {
   lcd.setCursor(2, 1);
-  if(curcnt)
+  if (curcnt)
   {
     lcd.print(F("d-clk> cont."));
   }
